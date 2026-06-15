@@ -14,7 +14,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '24'
 
       - name: Install dependencies
         run: |
@@ -26,7 +26,12 @@ jobs:
 
       - name: Install Railway CLI
         run: |
-          npm install -g @railway/cli
+          # Prefer official Railway installer; fallback to npm global install with unsafe-perm
+          if command -v railway >/dev/null 2>&1; then
+            echo "railway already installed"
+          else
+            curl -sL https://railway.app/install.sh | sh || npm install -g @railway/cli --unsafe-perm
+          fi
 
       - name: Login to Railway
         env:
